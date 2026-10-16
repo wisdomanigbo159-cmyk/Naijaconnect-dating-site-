@@ -1,2 +1,312 @@
 # Naijaconnect-dating-site-
 Meet someone real
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6d28d9">
+  <meta name="description" content="NaijaConnect helps adults in Nigeria discover meaningful connections.">
+  <title>NaijaConnect — Meet Someone Real</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--purple:#6d28d9;--purple2:#7c3aed;--pink:#ec4899;--ink:#211536;--muted:#6b6478;--bg:#faf7ff;--card:#fff;--line:#e9e1f4;--green:#18794e}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}.wrap{max-width:1080px;margin:auto;padding:0 20px}
+    header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{font-weight:850;font-size:1.35rem;letter-spacing:-.04em;color:var(--purple)}.brand span{color:var(--pink)}.nav-actions{display:flex;gap:9px}
+    .btn{border:0;border-radius:12px;padding:11px 17px;font-weight:750;display:inline-flex;justify-content:center;align-items:center;gap:8px}
+    .primary{color:white;background:linear-gradient(110deg,var(--purple),var(--pink));box-shadow:0 8px 20px #6d28d922}.secondary{background:#f4edff;color:var(--purple)}.plain{background:transparent;color:var(--purple);border:1px solid var(--line)}
+    .hero{padding:68px 0 46px;background:radial-gradient(circle at 90% 12%,#fce7f3 0,transparent 30%),radial-gradient(circle at 10% 0,#ede9fe 0,transparent 35%),var(--bg)}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}.eyebrow{display:inline-block;background:#f3e8ff;color:var(--purple);border-radius:999px;padding:7px 12px;font-size:.82rem;font-weight:800}
+    h1{font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.02;letter-spacing:-.055em;margin:18px 0}.gradient{background:linear-gradient(110deg,var(--purple),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{font-size:1.08rem;color:var(--muted);max-width:580px}.hero-buttons{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 14px}.small{font-size:.85rem;color:var(--muted)}
+    .visual{min-height:300px;border-radius:28px;padding:24px;background:linear-gradient(145deg,#7c3aed,#ec4899);color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 24px 60px #6d28d933;overflow:hidden;position:relative}
+    .visual:after{content:"♡";position:absolute;font-size:18rem;line-height:1;right:-22px;bottom:-70px;color:#ffffff20}.visual .quote{font-size:1.7rem;font-weight:800;line-height:1.2;max-width:300px;position:relative;z-index:1}.visual .pill{background:#ffffff24;border:1px solid #ffffff4d;border-radius:999px;padding:8px 12px;width:max-content;font-size:.85rem;font-weight:750;position:relative;z-index:1}
+    section{padding:48px 0}.section-title{text-align:center;margin:0 0 10px;font-size:2rem;letter-spacing:-.035em}.section-sub{text-align:center;color:var(--muted);max-width:650px;margin:0 auto 28px}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.feature{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px}.feature-icon{font-size:1.6rem}.feature h3{margin:9px 0 5px}.feature p{color:var(--muted);margin:0}
+    footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:.9rem;background:#fff}.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .notice{margin:14px 0 0;padding:12px 14px;border-radius:12px;background:#f3e8ff;color:#4c1d95;font-size:.92rem}.notice.error{background:#fff1f2;color:#9f1239}.notice.success{background:#ecfdf5;color:#065f46}
+    .modal{display:none;position:fixed;inset:0;background:#160b2bb8;z-index:20;padding:18px;overflow:auto;align-items:center;justify-content:center}.modal.show{display:flex}.dialog{background:#fff;width:min(100%,520px);border-radius:22px;padding:25px;box-shadow:0 25px 80px #0003;max-height:calc(100vh - 36px);overflow:auto}.dialog-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.dialog h2{margin:0;font-size:1.6rem}.close{border:0;background:#f4edff;color:var(--purple);border-radius:10px;width:38px;height:38px;font-size:1.3rem}
+    .tabs{display:flex;gap:8px;background:#f7f2ff;padding:5px;border-radius:12px;margin:18px 0}.tab{flex:1;border:0;background:transparent;border-radius:9px;padding:10px;font-weight:750;color:var(--muted)}.tab.active{background:#fff;color:var(--purple);box-shadow:0 2px 8px #24103a10}
+    .field{margin:13px 0}.field label{display:block;font-size:.9rem;font-weight:750;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid #dcd3e9;border-radius:11px;padding:12px 13px;background:#fff;color:var(--ink);outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px #6d28d91a}.field textarea{resize:vertical;min-height:90px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.checkline{display:flex;align-items:flex-start;gap:9px;font-size:.9rem;color:var(--muted);margin:14px 0}.checkline input{margin-top:5px}.wide{width:100%;margin-top:8px}.hide{display:none!important}.account{padding:44px 0;min-height:65vh}.account-card{max-width:760px;margin:auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:25px}.account-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.badge{font-size:.8rem;background:#f3e8ff;color:var(--purple);padding:5px 10px;border-radius:999px;font-weight:800}
+    @media(max-width:760px){.hero{padding:45px 0 35px}.hero-grid{grid-template-columns:1fr}.visual{min-height:230px}.features{grid-template-columns:1fr}.nav{height:64px}.nav .btn{padding:9px 12px}.form-grid{grid-template-columns:1fr}.dialog{padding:20px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a href="#" class="brand" style="text-decoration:none">Naija<span>Connect</span></a>
+    <div class="nav-actions" id="navActions">
+      <button class="btn plain" type="button" onclick="openAuth('login')">Log in</button>
+      <button class="btn primary" type="button" onclick="openAuth('signup')">Join free</button>
+    </div>
+    <div class="nav-actions hide" id="signedInActions">
+      <button class="btn secondary" type="button" onclick="showAccount()">My profile</button>
+      <button class="btn plain" type="button" onclick="signOut()">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main id="landing">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Made for meaningful connections 🇳🇬</span>
+        <h1>Meet someone<br><span class="gradient">real.</span></h1>
+        <p>Make room for genuine conversations, shared interests and new possibilities. Your next meaningful connection could start here.</p>
+        <div class="hero-buttons">
+          <button class="btn primary" type="button" onclick="openAuth('signup')">Create your free account →</button>
+          <button class="btn secondary" type="button" onclick="openAuth('login')">I already have an account</button>
+        </div>
+        <div class="small">For adults aged 18 and above. Be kind, be honest, stay safe.</div>
+      </div>
+      <div class="visual">
+        <span class="pill">💜 Your story starts here</span>
+        <div class="quote">“The best connections begin with a conversation.”</div>
+        <span class="pill">Real people. Respectful dating.</span>
+      </div>
+    </div>
+  </div>
+  <section>
+    <div class="wrap">
+      <h2 class="section-title">A better way to connect</h2>
+      <p class="section-sub">Build a profile that feels like you and start conversations at your own pace.</p>
+      <div class="features">
+        <article class="feature"><div class="feature-icon">💬</div><h3>Start with conversation</h3><p>Share a little about yourself and discover people with something in common.</p></article>
+        <article class="feature"><div class="feature-icon">🛡️</div><h3>Adults only</h3><p>NaijaConnect is intended for adults aged 18 and above. Never share passwords or financial details with strangers.</p></article>
+        <article class="feature"><div class="feature-icon">📍</div><h3>Connect in Nigeria</h3><p>Add your city or state to your profile so people can learn a little about where you are based.</p></article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<main id="accountArea" class="account hide">
+  <div class="wrap">
+    <div class="account-card">
+      <div class="account-head"><div><span class="badge">YOUR ACCOUNT</span><h2 style="margin:10px 0 0">Your NaijaConnect profile</h2></div><button class="btn plain" onclick="signOut()" type="button">Log out</button></div>
+      <p class="small">Complete your profile so it reflects who you are. Only share information you are comfortable sharing.</p>
+      <form id="profileForm">
+        <div class="form-grid">
+          <div class="field"><label for="profileUsername">Username</label><input id="profileUsername" name="username" maxlength="30" required autocomplete="nickname"></div>
+          <div class="field"><label for="profileDob">Date of birth</label><input id="profileDob" name="date_of_birth" type="date" required></div>
+          <div class="field"><label for="profileGender">Gender</label><select id="profileGender" name="gender" required><option value="">Choose…</option><option>Woman</option><option>Man</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
+          <div class="field"><label for="profileLocation">City / State in Nigeria</label><input id="profileLocation" name="location" maxlength="100" placeholder="e.g. Enugu, Enugu State"></div>
+        </div>
+        <div class="field"><label for="profileBio">About you</label><textarea id="profileBio" name="bio" maxlength="500" placeholder="Tell people a little about yourself (up to 500 characters)."></textarea></div>
+        <button class="btn primary wide" type="submit">Save profile</button>
+        <div id="profileNotice" class="notice hide" role="status"></div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap foot"><span>© <span id="year"></span> NaijaConnect</span><span>Adults 18+ · Respect · Honesty · Safety</span></div></footer>
+
+<div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="dialog">
+    <div class="dialog-top"><div><div class="brand" style="font-size:1rem">Naija<span>Connect</span></div><h2 id="authTitle">Create your account</h2></div><button class="close" type="button" aria-label="Close" onclick="closeAuth()">×</button></div>
+    <div class="tabs"><button class="tab active" id="signupTab" type="button" onclick="setMode('signup')">Sign up</button><button class="tab" id="loginTab" type="button" onclick="setMode('login')">Log in</button></div>
+    <form id="authForm">
+      <div id="signupFields">
+        <div class="field"><label for="signupUsername">Username</label><input id="signupUsername" maxlength="30" autocomplete="nickname" placeholder="Choose a username" required></div>
+        <div class="field"><label for="signupDob">Date of birth</label><input id="signupDob" type="date" required></div>
+        <div class="field"><label for="signupGender">Gender</label><select id="signupGender" required><option value="">Choose…</option><option>Woman</option><option>Man</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
+        <div class="field"><label for="signupLocation">City / State (optional)</label><input id="signupLocation" maxlength="100" placeholder="e.g. Enugu, Enugu State"></div>
+      </div>
+      <div class="field"><label for="authEmail">Email address</label><input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+      <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" minlength="8" autocomplete="current-password" required placeholder="At least 8 characters"></div>
+      <div id="ageNotice" class="small">You must be 18 or older to create an account.</div>
+      <label id="termsLine" class="checkline"><input id="adultConfirm" type="checkbox"><span>I confirm that I am at least 18 years old and agree to use NaijaConnect respectfully.</span></label>
+      <button class="btn primary wide" id="submitAuth" type="submit">Create account</button>
+      <div id="authNotice" class="notice hide" role="status"></div>
+    </form>
+    <p class="small" style="margin-bottom:0">Never use a password you use for banking or other important accounts.</p>
+  </div>
+</div>
+
+<script>
+/*
+  SETUP REQUIRED:
+  Replace the two placeholder values below with your own Supabase Project URL
+  and publishable key. Never use a service_role or secret key in browser code.
+*/
+const SUPABASE_URL = "https://vaqrltviiavvkwjzgdtk.supabase.co/rest/v1/";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_SkjIRPqDlz9R4Nu1mDDJXg_RIVg-527";
+
+let supabaseClient = null;
+let authMode = "signup";
+let currentUser = null;
+
+const $ = (id) => document.getElementById(id);
+$("year").textContent = new Date().getFullYear();
+
+function configured() {
+  if (!window.supabase || SUPABASE_URL.includes("PASTE_YOUR_") || SUPABASE_PUBLISHABLE_KEY.includes("PASTE_YOUR_")) {
+    showNotice("authNotice", "Setup needed: add your Supabase Project URL and publishable key in the code before using registration.", "error");
+    return false;
+  }
+  if (!supabaseClient) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  return true;
+}
+function showNotice(id, message, type="") {
+  const el = $(id); el.textContent = message; el.className = "notice" + (type ? " " + type : "");
+}
+function hideNotice(id) { $(id).className = "notice hide"; }
+function openAuth(mode="signup") { setMode(mode); $("authModal").classList.add("show"); document.body.style.overflow="hidden"; }
+function closeAuth() { $("authModal").classList.remove("show"); document.body.style.overflow=""; }
+function setMode(mode) {
+  authMode = mode;
+  const signup = mode === "signup";
+  $("authTitle").textContent = signup ? "Create your account" : "Welcome back";
+  $("signupFields").classList.toggle("hide", !signup);
+  $("termsLine").classList.toggle("hide", !signup);
+  $("adultConfirm").required = signup;
+  $("signupUsername").required = signup;
+  $("signupDob").required = signup;
+  $("signupGender").required = signup;
+  $("submitAuth").textContent = signup ? "Create account" : "Log in";
+  $("signupTab").classList.toggle("active", signup);
+  $("loginTab").classList.toggle("active", !signup);
+  hideNotice("authNotice");
+}
+function calculateAge(dateString) {
+  if (!dateString) return -1;
+  const dob = new Date(dateString + "T00:00:00");
+  if (Number.isNaN(dob.getTime())) return -1;
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) age--;
+  return age;
+}
+function validUsername(value) { return /^[a-zA-Z0-9_.-]{3,30}$/.test(value); }
+
+$("authForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  hideNotice("authNotice");
+  if (!configured()) return;
+  const email = $("authEmail").value.trim();
+  const password = $("authPassword").value;
+  $("submitAuth").disabled = true;
+  $("submitAuth").textContent = authMode === "signup" ? "Creating account…" : "Logging in…";
+  try {
+    if (authMode === "signup") {
+      const username = $("signupUsername").value.trim();
+      const dob = $("signupDob").value;
+      const gender = $("signupGender").value;
+      const location = $("signupLocation").value.trim();
+      if (!validUsername(username)) throw new Error("Choose a username with 3–30 letters, numbers, dots, underscores or hyphens.");
+      if (calculateAge(dob) < 18) throw new Error("NaijaConnect is for adults aged 18 and above. You cannot register with this date of birth.");
+      if (!$("adultConfirm").checked) throw new Error("Please confirm that you are at least 18 years old.");
+      const { data, error } = await supabaseClient.auth.signUp({
+        email, password,
+        options: { data: { username, date_of_birth: dob, gender, location } }
+      });
+      if (error) throw error;
+      if (data.session && data.user) {
+        currentUser = data.user;
+        await saveProfile({ username, date_of_birth: dob, gender, location, bio: "" }, true);
+        closeAuth();
+        showAccount();
+        showNotice("profileNotice", "Account created. Complete your profile and save your changes.", "success");
+      } else {
+        showNotice("authNotice", "Registration started. Check your email for the confirmation link. After confirming, log in here to finish setting up your profile.", "success");
+      }
+    } else {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      currentUser = data.user;
+      await loadProfile();
+      closeAuth();
+      showAccount();
+    }
+  } catch (error) {
+    showNotice("authNotice", error.message || "Something went wrong. Please try again.", "error");
+  } finally {
+    $("submitAuth").disabled = false;
+    $("submitAuth").textContent = authMode === "signup" ? "Create account" : "Log in";
+  }
+});
+
+async function saveProfile(profile, quiet=false) {
+  if (!currentUser) throw new Error("Please log in again before saving your profile.");
+  const payload = {
+    id: currentUser.id,
+    username: profile.username,
+    date_of_birth: profile.date_of_birth,
+    gender: profile.gender,
+    location: profile.location || null,
+    bio: profile.bio || null
+  };
+  const { error } = await supabaseClient.from("profiles").upsert(payload, { onConflict: "id" });
+  if (error) throw error;
+  if (!quiet) showNotice("profileNotice", "Your profile has been saved.", "success");
+}
+async function loadProfile() {
+  if (!currentUser) return;
+  const { data, error } = await supabaseClient.from("profiles").select("username,date_of_birth,gender,location,bio").eq("id", currentUser.id).maybeSingle();
+  if (error) throw error;
+  const metadata = currentUser.user_metadata || {};
+  const profile = data || metadata;
+  $("profileUsername").value = profile.username || "";
+  $("profileDob").value = profile.date_of_birth || "";
+  $("profileGender").value = profile.gender || "";
+  $("profileLocation").value = profile.location || "";
+  $("profileBio").value = profile.bio || "";
+}
+$("profileForm").addEventListener("submit", async (event) => {
+  event.preventDefault(); hideNotice("profileNotice");
+  if (!configured()) return;
+  const dob = $("profileDob").value;
+  if (calculateAge(dob) < 18) { showNotice("profileNotice", "Your date of birth must show that you are at least 18.", "error"); return; }
+  const username = $("profileUsername").value.trim();
+  if (!validUsername(username)) { showNotice("profileNotice", "Choose a username with 3–30 letters, numbers, dots, underscores or hyphens.", "error"); return; }
+  const button = $("profileForm").querySelector("button[type=submit]");
+  button.disabled = true; button.textContent = "Saving…";
+  try {
+    await saveProfile({ username, date_of_birth: dob, gender: $("profileGender").value, location: $("profileLocation").value.trim(), bio: $("profileBio").value.trim() });
+  } catch (error) {
+    showNotice("profileNotice", error.message || "Unable to save your profile.", "error");
+  } finally { button.disabled = false; button.textContent = "Save profile"; }
+});
+function showAccount() {
+  $("landing").classList.add("hide"); $("accountArea").classList.remove("hide");
+  $("navActions").classList.add("hide"); $("signedInActions").classList.remove("hide");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function showLanding() {
+  $("accountArea").classList.add("hide"); $("landing").classList.remove("hide");
+  $("signedInActions").classList.add("hide"); $("navActions").classList.remove("hide");
+}
+async function signOut() {
+  if (supabaseClient) await supabaseClient.auth.signOut();
+  currentUser = null; showLanding();
+}
+$("authModal").addEventListener("click", (event) => { if (event.target === $("authModal")) closeAuth(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeAuth(); });
+
+(async function init() {
+  const minDate = new Date(); minDate.setFullYear(minDate.getFullYear() - 18);
+  const maxDob = minDate.toISOString().slice(0,10);
+  $("signupDob").max = maxDob; $("profileDob").max = maxDob;
+  if (!configured()) return;
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session?.user) {
+      currentUser = session.user;
+      await loadProfile();
+      showAccount();
+    }
+    supabaseClient.auth.onAuthStateChange((_event, sessionNow) => {
+      currentUser = sessionNow?.user || null;
+      if (!currentUser) showLanding();
+    });
+  } catch (error) {
+    console.error("NaijaConnect initialization:", error);
+  }
+})();
+</script>
+</body>
+</html>
