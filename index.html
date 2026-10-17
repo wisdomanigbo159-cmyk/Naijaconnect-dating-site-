@@ -256,32 +256,30 @@ async function saveProfile(profile, quiet = false) {
   if (!quiet) {
     showNotice("profileNotice", "Your profile has been saved successfully.");
   }
-}{
-  if (!currentUser) throw new Error("Please log in again before saving your profile.");
-  const payload = {
-    id: currentUser.id,
-    username: profile.username,
-    date_of_birth: profile.date_of_birth,
-    gender: profile.gender,
-    location: profile.location || null,
-    bio: profile.bio || null
-  };
-  const { error } = await supabaseClient.from("profiles").upsert(payload, { onConflict: "id" });
-  if (error) throw error;
-  if (!quiet) showNotice("profileNotice", "Your profile has been saved.", "success");
-}
+
 async function loadProfile() {
   if (!currentUser) return;
-  const { data, error } = await supabaseClient.from("profiles").select("username,date_of_birth,gender,location,bio").eq("id", currentUser.id).maybeSingle();
-  if (error) throw error;
-  const metadata = currentUser.user_metadata || {};
-  const profile = data || metadata;
-  $("profileUsername").value = profile.username || "";
-  $("profileDob").value = profile.date_of_birth || "";
-  $("profileGender").value = profile.gender || "";
-  $("profileLocation").value = profile.location || "";
-  $("profileBio").value = profile.bio || "";
-}
+  const { data, error } = await supabaseClient
+  .from("profiles")
+  .select("display_name,birth_date,gender,state,bio")
+  .eq("id", currentUser.id)
+  .maybeSingle();
+
+if (error) throw error;
+
+const metadata = currentUser.user_metadata || {};
+const profile = data || {};
+
+$("profileUsername").value =
+  profile.display_name || metadata.username || "";
+
+$("profileDob").value = profile.birth_date || "";
+
+$("profileGender").value = profile.gender || "";
+
+$("profileLocation").value = profile.state || "";
+
+$("profileBio").value = profile.bio || "";
 $("profileForm").addEventListener("submit", async (event) => {
   event.preventDefault(); hideNotice("profileNotice");
   if (!configured()) return;
