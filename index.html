@@ -228,7 +228,35 @@ $("authForm").addEventListener("submit", async (event) => {
   }
 });
 
-async function saveProfile(profile, quiet=false) {
+async function saveProfile(profile, quiet = false) {
+  if (!currentUser) {
+    throw new Error("Please log in first.");
+  }
+
+  const payload = {
+    id: currentUser.id,
+    display_name:
+      profile.username ||
+      profile.display_name ||
+      currentUser.user_metadata?.username ||
+      currentUser.email?.split("@")[0] ||
+      "NaijaConnect Member",
+    birth_date: profile.date_of_birth || profile.birth_date || null,
+    gender: profile.gender || null,
+    state: profile.location || profile.state || null,
+    bio: profile.bio || null
+  };
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .upsert(payload, { onConflict: "id" });
+
+  if (error) throw error;
+
+  if (!quiet) {
+    showNotice("profileNotice", "Your profile has been saved successfully.");
+  }
+}{
   if (!currentUser) throw new Error("Please log in again before saving your profile.");
   const payload = {
     id: currentUser.id,
